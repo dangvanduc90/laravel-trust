@@ -2,8 +2,11 @@
 
 namespace App\Http\Controllers\Auth;
 
+use App\Permission;
+use App\Role;
 use App\User;
 use App\Http\Controllers\Controller;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Foundation\Auth\RegistersUsers;
@@ -68,5 +71,38 @@ class RegisterController extends Controller
             'email' => $data['email'],
             'password' => Hash::make($data['password']),
         ]);
+    }
+
+    protected function registered(Request $request, User $user)
+    {
+        $owner = new Role();
+        $owner->name = 'owner';
+        $owner->display_name = 'Project Owner'; // optional
+        $owner->description = 'User is the owner of a given project'; // optional
+        $owner->save();
+
+        $admin = new Role();
+        $admin->name = 'admin';
+        $admin->display_name = 'User Administrator'; // optional
+        $admin->description = 'User is allowed to manage and edit other users'; // optional
+        $admin->save();
+
+        $createPost = new Permission();
+        $createPost->name = 'create-post';
+        $createPost->display_name = 'Create Posts'; // optional
+        // Allow a user to...
+        $createPost->description = 'create new blog posts'; // optional
+        $createPost->save();
+
+        $editUser = new Permission();
+        $editUser->name = 'edit-user';
+        $editUser->display_name = 'Edit Users'; // optional
+        // Allow a user to...
+        $editUser->description = 'edit existing users'; // optional
+        $editUser->save();
+
+        $owner->attachPermissions([$createPost, $editUser]); // parameter can be a Permission object, array or id
+
+        $user->attachRoles([$admin, $owner]); // parameter can be a Role object, array, id or the role string name
     }
 }
