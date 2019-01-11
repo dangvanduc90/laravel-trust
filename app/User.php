@@ -6,8 +6,10 @@ use Illuminate\Notifications\Notifiable;
 use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Laratrust\Traits\LaratrustUserTrait;
+use Spatie\Searchable\Searchable;
+use Spatie\Searchable\SearchResult;
 
-class User extends Authenticatable
+class User extends Authenticatable implements Searchable
 {
     use LaratrustUserTrait;
     use Notifiable;
@@ -29,4 +31,15 @@ class User extends Authenticatable
     protected $hidden = [
         'password', 'remember_token',
     ];
+
+    public function getSearchResult(): SearchResult
+    {
+        $url = route('user.show', $this->id);
+
+        return new SearchResult(
+            $this,
+            $this->name,
+            $url
+        );
+    }
 }

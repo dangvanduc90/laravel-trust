@@ -2,7 +2,10 @@
 
 namespace App\Http\Controllers;
 
+use App\Role;
+use App\User;
 use Illuminate\Http\Request;
+use Spatie\Searchable\Search;
 
 class HomeController extends Controller
 {
@@ -24,5 +27,14 @@ class HomeController extends Controller
     public function index()
     {
         return view('home');
+    }
+
+    public function search(Request $request)
+    {
+        $searchResults = (new Search())
+            ->registerModel(User::class, 'name')
+            ->registerModel(Role::class, 'name')
+            ->perform($request->input('query'));
+        dd($searchResults);
     }
 }
