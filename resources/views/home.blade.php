@@ -14,6 +14,7 @@
                         </div>
                     @endif
 
+                    {{ app('debugbar')->warning('Watch out..') }}
                     You are logged in!
                 </div>
             </div>

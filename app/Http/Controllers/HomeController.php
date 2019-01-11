@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Role;
 use App\User;
+use DebugBar\DebugBar;
 use Illuminate\Http\Request;
 use Spatie\Searchable\Search;
 
